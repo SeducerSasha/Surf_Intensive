@@ -1,6 +1,3 @@
-import 'package:surf_dart_courses_template/surf_dart_courses_template.dart'
-    as surf_dart_courses_template;
-
 enum Countries { brazil, russia, turkish, spain, japan }
 
 class Territory {
