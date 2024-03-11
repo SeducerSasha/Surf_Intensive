@@ -8,7 +8,7 @@ abstract interface class Filter<T> {
   Filter(this.filterCondition);
 
   /// Выполняем функцию фильтрации. В качестве результата возвращается, подходит товар под условие фильтра или нет.
-  bool apply(final Article article, filterCondition);
+  bool apply(final Article article);
 }
 
 /// Реализация фильтрации по цене (не больше указанной).
@@ -17,8 +17,7 @@ class FilterPrice implements Filter<int> {
   int filterCondition;
 
   @override
-  bool apply(Article article, filterCondition) =>
-      article.price <= this.filterCondition;
+  bool apply(Article article) => article.price <= filterCondition;
 
   FilterPrice(this.filterCondition);
 }
@@ -29,8 +28,7 @@ class FilterCount implements Filter<int> {
   int filterCondition;
 
   @override
-  bool apply(Article article, filterCondition) =>
-      article.count < this.filterCondition;
+  bool apply(Article article) => article.count < filterCondition;
 
   FilterCount(this.filterCondition);
 }
@@ -41,15 +39,14 @@ class FilterCategory implements Filter<String> {
   String filterCondition;
 
   @override
-  bool apply(Article article, filterCondition) =>
-      article.category == this.filterCondition;
+  bool apply(Article article) => article.category == filterCondition;
 
   FilterCategory(this.filterCondition);
 }
 
 /// Функция фильтрации по списку товаров и указанному условию.
 void applyFilter(final List<Article> articles, Filter filter) {
-  var listPrice = articles.where((element) => filter.apply(element, filter));
+  final listPrice = articles.where((element) => filter.apply(element));
 
   /// После получения списка товаров, удовлетворяющих условию, выводим их в консоль.
   listPrice.forEach((element) {
@@ -91,11 +88,11 @@ void main() {
 6,вода,Бородинский,500,5
 ''';
 
-  /// Сначала нужно забить строку товаров на список строк. В качестве разделителя используем перенос строки.
-  var listStringArticles = articles.split('\n');
+  /// Сначала нужно разбить строку товаров на список строк. В качестве разделителя используем перенос строки.
+  final listStringArticles = articles.split('\n');
 
   /// Опеределяем пустой список будущих товаров.
-  List<Article> listArticles = [];
+  final List<Article> listArticles = [];
 
   /// Обходим список строковых описаний товаров.
   listStringArticles.forEach(
