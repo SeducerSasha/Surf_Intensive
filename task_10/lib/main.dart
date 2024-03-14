@@ -7,9 +7,9 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    /// Возьмем размеры экрана, чтобы при построении построить фигуру в центре.
     final double widthMedia = MediaQuery.of(context).size.width;
     final double heightMedia = MediaQuery.of(context).size.height;
     return MaterialApp(
@@ -42,19 +42,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  /// Инициализируем переменные.
+  /// Отступ слева для хранения координат фигуры при перемещении.
   double left = 0;
+
+  /// отступ сверху для хранения координат фигуры при перемещении.
   double top = 0;
+
+  /// Определяем размеры фигуры.
   double withFigure = 100;
   double heightFigure = 100;
+
+  /// Фигура может быть либо прямоугольником, либо кругом.
   bool isCircle = false;
+
+  /// Включена ли анимация.
   bool isAnimation = false;
+
+  /// Определяем переменные для анимации.
   late AnimationController controller;
   late Animation<double> animation;
 
   @override
   void initState() {
+    /// Присваиваем переменным начальное положение фигуры.
     left = (widget.widthMedia - withFigure) / 2;
     top = (widget.heightMedia - heightFigure) / 2;
+
+    /// Настраиваем поведение анимации.
     controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 5));
     animation = CurvedAnimation(parent: controller, curve: Curves.decelerate);
@@ -70,14 +85,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             left: left,
             top: top,
             child: RotationTransition(
+              /// Виджет для анимации.
               turns: animation,
               child: AnimatedContainer(
+                /// Виджет для трансформации одной фигуры в другую.
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.ease,
                 decoration: BoxDecoration(
-                    color: isCircle ? Colors.blue : Colors.amber,
+
+                    /// Меняем цвет в зависимости от вида фигуры
+                    gradient: LinearGradient(
+                        colors: isCircle
+                            ? [Colors.blue, Colors.lime]
+                            : [Colors.amber, Colors.red]),
+
+                    /// Меняем фигуру.
                     borderRadius: isCircle
-                        ? BorderRadius.circular(30)
+                        ? BorderRadius.circular(45)
                         : BorderRadius.circular(0)),
                 width: 100,
                 height: 100,
@@ -86,16 +110,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           Positioned.fill(
             child: GestureDetector(
+              /// Действие при нажатии. Меняем переменную (круг на прямоугольник и обратно).
+              /// И перерисовываем экран.
               onTap: () {
                 setState(() {
                   isCircle = !isCircle;
                 });
               },
+
+              /// Включам или выключаем анимацию фигуры
               onLongPress: () {
                 isAnimation = !isAnimation;
 
                 isAnimation ? controller.stop() : controller.repeat();
               },
+
+              /// Отслеживаем изменения положения фигуры, изменяем переменные и перерисовываем экран
               onPanUpdate: (details) {
                 setState(() {
                   left = left + details.delta.dx;
@@ -123,6 +153,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    /// Не забываем уничтожить контроллер анимации.
     controller.dispose();
     super.dispose();
   }
