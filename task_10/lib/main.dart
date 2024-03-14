@@ -103,8 +103,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     borderRadius: isCircle
                         ? BorderRadius.circular(45)
                         : BorderRadius.circular(0)),
-                width: 100,
-                height: 100,
+                width: withFigure,
+                height: heightFigure,
               ),
             ),
           ),
